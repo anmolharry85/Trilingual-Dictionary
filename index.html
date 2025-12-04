@@ -287,6 +287,15 @@
       object-fit: cover;
     }
 
+    /* ─────────── WORD IMAGE FOR KIDS ─────────── */
+    #wordImage {
+      width: 100%;
+      max-width: 350px;
+      border-radius: 16px;
+      box-shadow: 0 0 18px rgba(0,0,0,0.6);
+      margin-top: 10px;
+    }
+
     /* ─────────── QR Code box ─────────── */
     .qr-box {
       text-align: center;
@@ -443,23 +452,17 @@
       <div class="card">
         <div class="label">Meaning – Hindi (हिन्दी)</div>
         <div class="value" id="meaningHi">–</div>
-<!-- Image Card (Auto Image for Kids) -->
-<div class="card">
-  <div class="label">Picture for Kids</div>
-  <div class="small">Automatic visual from the internet</div>
-  <img id="wordImage" src="" alt="Word Image" style="
-      width: 100%; 
-      max-width: 350px; 
-      border-radius: 16px; 
-      box-shadow: 0 0 18px rgba(0,0,0,0.6); 
-      margin-top: 10px;
-  ">
-</div>
+      </div>
 
+      <!-- Auto Image for Kids -->
+      <div class="card">
+        <div class="label">Picture for Kids</div>
+        <div class="small">Automatic visual from the internet to help kids understand the word.</div>
+        <img id="wordImage" src="" alt="Word Image">
       </div>
     </div>
 
-    <!-- Pictures card: two images -->
+    <!-- Pictures card: two fixed images -->
     <div class="card">
       <div class="label">Pictures</div>
       <div class="small">Upload <code>picture1.jpg</code> and <code>picture2.jpg</code> to this repo.</div>
@@ -490,7 +493,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      Created by <span>Anmolpreet Singh</span>
+      Made with ♡ by <span>Anmolpreet Singh</span>
     </footer>
   </div>
 
@@ -516,6 +519,8 @@
     const exampleEn = document.getElementById("exampleEn");
     const synBlock = document.getElementById("synBlock");
     const synonymsEn = document.getElementById("synonymsEn");
+
+    const wordImage = document.getElementById("wordImage");
 
     let enAudio = null;
 
@@ -597,6 +602,7 @@
       playEnBtn.style.display = "none";
       exampleBlock.style.display = "none";
       synBlock.style.display = "none";
+      if (wordImage) wordImage.src = "";
       enAudio = null;
 
       try {
@@ -643,10 +649,11 @@
         } else {
           meaningPa.textContent = "Punjabi translation not available.";
           meaningHi.textContent = "Hindi translation not available.";
-// AUTO IMAGE FOR KIDS
-document.getElementById("wordImage").src =
-  "https://source.unsplash.com/600x400/?"+ encodeURIComponent(word);
+        }
 
+        // 3. Automatic word image for kids (Unsplash)
+        if (wordImage) {
+          wordImage.src = "https://source.unsplash.com/600x400/?" + encodeURIComponent(word);
         }
 
         resultsEl.style.display = "block";
