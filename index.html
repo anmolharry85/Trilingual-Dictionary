@@ -2,115 +2,410 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Trilingual Dictionary (EN–PA–HI)</title>
+  <title>Anmol’s Trilingual Dictionary (Online)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fancy fonts: English, Punjabi-style, Hindi -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Baloo+Paaji+2:wght@500;700&family=Noto+Sans+Devanagari:wght@500;700&display=swap" rel="stylesheet">
+
   <style>
+    /* ─────────── PAGE BACKGROUND & LAYOUT ─────────── */
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
       padding: 0;
-      background: #f5f5f5;
+      min-height: 100vh;
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: white;
+      background: radial-gradient(circle at top left, #ff6bff 0%, #8B008B 40%, #2b0035 100%);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      font-size: 20px; /* increased base font size */
     }
+
     .app {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 16px;
+      width: 100%;
+      max-width: 700px;
+      margin: 20px auto 32px;
+      padding: 20px;
+      box-sizing: border-box;
     }
-    h1 {
-      font-size: 1.5rem;
-      text-align: center;
-      margin-bottom: 8px;
+
+    /* ─────────── TOP BAR / LOGO ─────────── */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
     }
+
+    .logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ff9bff 0%, #ff2fff 40%, #8B008B 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(255, 102, 255, 0.9);
+      font-size: 1.6rem;
+    }
+
+    .logo-circle span {
+      transform: translateY(-1px);
+    }
+
+    .app-title-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-title-main {
+      font-size: 1.7rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .app-title-sub {
+      font-size: 1.2rem;
+      color: #ffd6ff;
+    }
+
     .subtitle {
-      font-size: 0.9rem;
       text-align: center;
-      color: #555;
-      margin-bottom: 16px;
+      font-size: 1.1rem;
+      color: #ffd6ff;
+      margin-bottom: 22px;
     }
+
+    /* ─────────── CARDS (GLASS EFFECT) ─────────── */
     .card {
-      background: white;
-      border-radius: 12px;
-      padding: 12px 14px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      margin-bottom: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 18px;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.16);
+      backdrop-filter: blur(10px);
     }
+
+    /* ─────────── INPUT & BUTTON ROW ─────────── */
     .input-row {
       display: flex;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 12px;
+      margin-bottom: 10px;
     }
+
     input[type="text"] {
       flex: 1;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px solid #ffb3ff;
+      background: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #111;
+      outline: none;
+      box-shadow: 0 0 8px rgba(255, 179, 255, 0.6);
     }
+
+    input[type="text"]::placeholder {
+      color: #666;
+      font-weight: 400;
+    }
+
+    input[type="text"]:focus {
+      border-color: #ff66ff;
+      box-shadow: 0 0 12px rgba(255, 102, 255, 0.95);
+    }
+
     button {
-      padding: 10px 14px;
-      border-radius: 8px;
+      padding: 14px 18px;
+      border-radius: 14px;
       border: none;
-      font-size: 0.95rem;
+      font-size: 1.05rem;
       cursor: pointer;
-      background: black;
+      background: #000000;
       color: white;
+      font-weight: 700;
+      box-shadow: 0 0 12px #ff66ff;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
     }
+
+    button:hover {
+      transform: translateY(-1px) scale(1.02);
+      background: #1a1a1a;
+      box-shadow: 0 0 18px #ff99ff;
+    }
+
+    button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 0 10px #ff66ff;
+    }
+
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      box-shadow: none;
     }
+
+    /* ─────────── LABELS & TEXT ─────────── */
     .label {
-      font-weight: 600;
-      margin-top: 4px;
-      margin-bottom: 2px;
-      font-size: 0.9rem;
-    }
-    .value {
-      font-size: 0.95rem;
+      font-weight: 800;
+      color: #ffe4ff;
+      margin-top: 6px;
       margin-bottom: 4px;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
+
+    .value {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+    }
+
+    .small {
+      font-size: 0.9rem;
+      color: #ffcfff;
+    }
+
+    .error {
+      color: #ff8080;
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+
+    /* ─────────── AUDIO BUTTON ─────────── */
     .audio-btn {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      margin-top: 4px;
-      font-size: 0.85rem;
-      background: #333;
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 16px;
-    }
-    .small {
-      font-size: 0.8rem;
-      color: #777;
-    }
-    .error {
-      color: #b00020;
-      font-size: 0.9rem;
-      margin-top: 4px;
-    }
-    .lang-block {
+      gap: 8px;
       margin-top: 8px;
-      padding-top: 6px;
-      border-top: 1px dashed #ddd;
+      font-size: 0.95rem;
+      background: #444;
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 24px;
+      box-shadow: 0 0 12px #ff66ff;
+    }
+
+    /* ─────────── SPECIAL COLORS (YOUR SETTINGS) ─────────── */
+
+    /* Word: BLACK on white pill */
+    #resWord {
+      color: #000000;
+      font-weight: 800;
+      font-size: 1.4rem;
+      background: #ffffff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.6);
+    }
+
+    /* Phonetic: WHITE */
+    #resPhonetic {
+      color: #ffffff;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    /* English meaning: SKY BLUE */
+    #meaningEn {
+      color: #87CEEB;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    /* Punjabi meaning: NEON ORANGE + Punjabi-style font */
+    #meaningPa {
+      color: #FF6A00;
+      font-size: 1.25rem;
+      font-weight: 600;
+      font-family: "Baloo Paaji 2", system-ui, -apple-system, sans-serif;
+    }
+
+    /* Hindi meaning: NEON PARROT GREEN + Devanagari font */
+    #meaningHi {
+      color: #39FF14;
+      font-size: 1.25rem;
+      font-weight: 600;
+      font-family: "Noto Sans Devanagari", system-ui, -apple-system, sans-serif;
+    }
+
+    /* Extra: example & synonyms styling */
+    .extra-block {
+      margin-top: 8px;
+      font-size: 1rem;
+    }
+    .extra-label {
+      font-weight: 700;
+      color: #ffe4ff;
+      font-size: 1rem;
+    }
+    .extra-text {
+      font-size: 1rem;
+      color: #f0f9ff;
+    }
+
+    /* Fade-in for results */
+    #results {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─────────── PICTURES SECTION ─────────── */
+    .pictures-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .picture-block {
+      flex: 1 1 45%;
+      max-width: 280px;
+      text-align: center;
+    }
+
+    .custom-img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 16px;
+      box-shadow: 0 0 18px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.3);
+      object-fit: cover;
+    }
+
+    /* ─────────── QR Code box ─────────── */
+    .qr-box {
+      text-align: center;
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 14px rgba(255, 102, 255, 0.6);
+      animation: floatGlow 3s ease-in-out infinite alternate;
+    }
+
+    .qr-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffe4ff;
+      margin-bottom: 12px;
+      text-shadow: 0 0 6px rgba(255,255,255,0.3);
+    }
+
+    .qr-img {
+      width: 230px;
+      height: 230px;
+      border-radius: 14px;
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes floatGlow {
+      from {
+        transform: translateY(0);
+        box-shadow: 0 0 12px rgba(255, 102, 255, 0.6);
+      }
+      to {
+        transform: translateY(-4px);
+        box-shadow: 0 0 20px rgba(255, 204, 255, 0.9);
+      }
+    }
+
+    .qr-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .qr-actions button {
+      min-width: 150px;
+      font-size: 1rem;
+      padding: 10px 14px;
+    }
+
+    /* ─────────── FOOTER ─────────── */
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 1rem;
+      color: #ffddff;
+      opacity: 0.9;
+    }
+    .footer span {
+      font-weight: 700;
+    }
+
+    /* Mobile tweaks */
+    @media (max-width: 480px) {
+      .app {
+        padding: 14px;
+      }
+      .input-row {
+        flex-direction: column;
+      }
+      button {
+        width: 100%;
+      }
+      .picture-block {
+        flex: 1 1 100%;
+      }
+      .app-title-main {
+        font-size: 1.4rem;
+      }
+      .app-title-sub {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="app">
-    <h1>Multilingual Word Helper</h1>
-    <div class="subtitle">English → Punjabi → Hindi • Phonetics + Pronunciation + Meaning</div>
 
+    <!-- Top bar with logo & title -->
+    <div class="top-bar">
+      <div class="logo-circle">
+        <span>🎧</span>
+      </div>
+      <div class="app-title-block">
+        <div class="app-title-main">Anmol’s Dictionary</div>
+        <div class="app-title-sub">English • ਪੰਜਾਬੀ • हिन्दी</div>
+      </div>
+    </div>
+
+    <div class="subtitle">
+      Online meanings, phonetics & translations – EN → PA → HI
+    </div>
+
+    <!-- Search card -->
     <div class="card">
       <div class="input-row">
         <input id="wordInput" type="text" placeholder="Type an English word (e.g. school)" />
         <button id="searchBtn">Search</button>
       </div>
-      <div class="small">Tip: Keep spelling correct for best results.</div>
+      <div class="small">
+        Uses free online dictionary & translation APIs. Internet is required.
+      </div>
       <div id="status" class="small"></div>
       <div id="error" class="error"></div>
     </div>
 
+    <!-- Results -->
     <div id="results" style="display:none;">
       <div class="card">
         <div class="label">Word</div>
@@ -120,7 +415,7 @@
         <div class="value" id="resPhonetic">–</div>
 
         <div class="label">English (UK) Pronunciation</div>
-        <button id="playUkBtn" class="audio-btn" style="display:none;">
+        <button id="playEnBtn" class="audio-btn" style="display:none;">
           ▶ Play UK Audio
         </button>
       </div>
@@ -128,6 +423,16 @@
       <div class="card">
         <div class="label">Meaning – English</div>
         <div class="value" id="meaningEn">–</div>
+
+        <div class="extra-block" id="exampleBlock" style="display:none;">
+          <span class="extra-label">Example: </span>
+          <span class="extra-text" id="exampleEn"></span>
+        </div>
+
+        <div class="extra-block" id="synBlock" style="display:none;">
+          <span class="extra-label">Synonyms: </span>
+          <span class="extra-text" id="synonymsEn"></span>
+        </div>
       </div>
 
       <div class="card">
@@ -138,11 +443,62 @@
       <div class="card">
         <div class="label">Meaning – Hindi (हिन्दी)</div>
         <div class="value" id="meaningHi">–</div>
+<!-- Image Card (Auto Image for Kids) -->
+<div class="card">
+  <div class="label">Picture for Kids</div>
+  <div class="small">Automatic visual from the internet</div>
+  <img id="wordImage" src="" alt="Word Image" style="
+      width: 100%; 
+      max-width: 350px; 
+      border-radius: 16px; 
+      box-shadow: 0 0 18px rgba(0,0,0,0.6); 
+      margin-top: 10px;
+  ">
+</div>
+
       </div>
     </div>
+
+    <!-- Pictures card: two images -->
+    <div class="card">
+      <div class="label">Pictures</div>
+      <div class="small">Upload <code>picture1.jpg</code> and <code>picture2.jpg</code> to this repo.</div>
+      <div class="pictures-grid">
+        <div class="picture-block">
+          <img src="picture1.jpg" alt="Picture 1" class="custom-img">
+          <div class="small">Picture 1</div>
+        </div>
+        <div class="picture-block">
+          <img src="picture2.jpg" alt="Picture 2" class="custom-img">
+          <div class="small">Picture 2</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QR Code section -->
+    <div class="qr-box">
+      <div class="qr-title">Scan or Share the Dictionary App</div>
+      <img class="qr-img" 
+        src="https://chart.googleapis.com/chart?chs=240x240&cht=qr&chl=https://anmolharry85.github.io/Trilingual-Dictionary/" 
+        alt="QR Code">
+
+      <div class="qr-actions">
+        <button type="button" onclick="downloadQR()">Download QR</button>
+        <button type="button" onclick="shareApp()">Share App</button>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      Created by <span>Anmolpreet Singh</span>
+    </footer>
   </div>
 
   <script>
+    // App URL + QR URL
+    const APP_URL = "https://anmolharry85.github.io/Trilingual-Dictionary/";
+    const QR_URL = "https://chart.googleapis.com/chart?chs=240x240&cht=qr&chl=" + encodeURIComponent(APP_URL);
+
     const wordInput = document.getElementById("wordInput");
     const searchBtn = document.getElementById("searchBtn");
     const statusEl = document.getElementById("status");
@@ -154,15 +510,22 @@
     const meaningEn = document.getElementById("meaningEn");
     const meaningPa = document.getElementById("meaningPa");
     const meaningHi = document.getElementById("meaningHi");
-    const playUkBtn = document.getElementById("playUkBtn");
+    const playEnBtn = document.getElementById("playEnBtn");
 
-    let ukAudio = null;
+    const exampleBlock = document.getElementById("exampleBlock");
+    const exampleEn = document.getElementById("exampleEn");
+    const synBlock = document.getElementById("synBlock");
+    const synonymsEn = document.getElementById("synonymsEn");
 
-    // ---- Helper: call Free Dictionary API for English data ----
+    let enAudio = null;
+
+    // Fetch English dictionary data from Free Dictionary API
     async function fetchEnglishData(word) {
-      const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
+      const url = "https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(word);
       const res = await fetch(url);
-      if (!res.ok) throw new Error("Word not found in English dictionary.");
+      if (!res.ok) {
+        throw new Error("Word not found in English dictionary.");
+      }
       const data = await res.json();
       const entry = data[0];
 
@@ -173,31 +536,38 @@
         if (phonObj) phonetic = phonObj.text;
       }
 
-      // UK pronunciation audio (try to pick an audio labeled 'uk' if possible)
+      // audio
       let audioUrl = "";
       if (Array.isArray(entry.phonetics)) {
-        // Some entries have audio URLs; we just pick the first non-empty
         const audioObj = entry.phonetics.find(p => p.audio);
         if (audioObj) audioUrl = audioObj.audio;
       }
 
-      // meaning in English (take first definition)
+      // English meaning, example, synonyms
       let englishMeaning = "";
+      let example = "";
+      let synonyms = [];
+
       if (Array.isArray(entry.meanings) && entry.meanings.length > 0) {
         const firstMeaning = entry.meanings[0];
         if (Array.isArray(firstMeaning.definitions) && firstMeaning.definitions.length > 0) {
-          englishMeaning = firstMeaning.definitions[0].definition;
+          const def = firstMeaning.definitions[0];
+          englishMeaning = def.definition || "";
+          if (def.example) example = def.example;
+          if (Array.isArray(def.synonyms)) synonyms = def.synonyms;
+        }
+        // If no synonyms in definition, try meanings-level synonyms
+        if ((!synonyms || synonyms.length === 0) && Array.isArray(firstMeaning.synonyms)) {
+          synonyms = firstMeaning.synonyms;
         }
       }
 
-      return { phonetic, audioUrl, englishMeaning };
+      return { phonetic, audioUrl, englishMeaning, example, synonyms };
     }
 
-    // ---- Helper: simple translation using MyMemory API (free) ----
-    // Note: This is free and rate-limited; for production, replace with a paid API (Google, DeepL, etc.)
+    // Translation helper – MyMemory free API (en → targetLang)
     async function translateText(text, targetLang) {
-      // targetLang: 'pa' for Punjabi, 'hi' for Hindi
-      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`;
+      const url = "https://api.mymemory.translated.net/get?q=" + encodeURIComponent(text) + "&langpair=en|" + targetLang;
       const res = await fetch(url);
       if (!res.ok) throw new Error("Translation error");
       const data = await res.json();
@@ -207,7 +577,7 @@
       throw new Error("Translation not available");
     }
 
-    async function lookupWord() {
+    async function onSearch() {
       const word = wordInput.value.trim();
       if (!word) {
         errorEl.textContent = "Please type a word first.";
@@ -215,7 +585,7 @@
       }
 
       errorEl.textContent = "";
-      statusEl.textContent = "Searching...";
+      statusEl.textContent = "Looking up online dictionary...";
       searchBtn.disabled = true;
       resultsEl.style.display = "none";
 
@@ -224,39 +594,59 @@
       meaningEn.textContent = "";
       meaningPa.textContent = "";
       meaningHi.textContent = "";
-      playUkBtn.style.display = "none";
-      ukAudio = null;
+      playEnBtn.style.display = "none";
+      exampleBlock.style.display = "none";
+      synBlock.style.display = "none";
+      enAudio = null;
 
       try {
-        // 1. English data (phonetic, audio, English meaning)
+        // 1. English data
         const englishData = await fetchEnglishData(word);
         resWord.textContent = word;
         resPhonetic.textContent = englishData.phonetic || "Not available";
         meaningEn.textContent = englishData.englishMeaning || "Meaning not found.";
 
-        // set up audio
-        if (englishData.audioUrl) {
-          ukAudio = new Audio(englishData.audioUrl);
-          playUkBtn.style.display = "inline-flex";
+        // example
+        if (englishData.example) {
+          exampleEn.textContent = englishData.example;
+          exampleBlock.style.display = "block";
         } else {
-          ukAudio = null;
-          playUkBtn.style.display = "none";
+          exampleBlock.style.display = "none";
         }
 
-        // 2. Translations of the English meaning into Punjabi and Hindi
+        // synonyms
+        if (englishData.synonyms && englishData.synonyms.length > 0) {
+          synonymsEn.textContent = englishData.synonyms.slice(0, 5).join(", ");
+          synBlock.style.display = "block";
+        } else {
+          synBlock.style.display = "none";
+        }
+
+        // audio
+        if (englishData.audioUrl) {
+          enAudio = new Audio(englishData.audioUrl);
+          playEnBtn.style.display = "inline-flex";
+        } else {
+          enAudio = null;
+          playEnBtn.style.display = "none";
+        }
+
+        // 2. Translations
         if (englishData.englishMeaning) {
           statusEl.textContent = "Translating meaning into Punjabi and Hindi...";
-
-          const [punjabi, hindi] = await Promise.all([
+          const [pa, hi] = await Promise.all([
             translateText(englishData.englishMeaning, "pa").catch(() => null),
             translateText(englishData.englishMeaning, "hi").catch(() => null)
           ]);
-
-          meaningPa.textContent = punjabi || "Punjabi translation not available.";
-          meaningHi.textContent = hindi || "Hindi translation not available.";
+          meaningPa.textContent = pa || "Punjabi translation not available.";
+          meaningHi.textContent = hi || "Hindi translation not available.";
         } else {
           meaningPa.textContent = "Punjabi translation not available.";
           meaningHi.textContent = "Hindi translation not available.";
+// AUTO IMAGE FOR KIDS
+document.getElementById("wordImage").src =
+  "https://source.unsplash.com/600x400/?"+ encodeURIComponent(word);
+
         }
 
         resultsEl.style.display = "block";
@@ -270,17 +660,41 @@
       }
     }
 
-    // Events
-    searchBtn.addEventListener("click", lookupWord);
+    searchBtn.addEventListener("click", onSearch);
     wordInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") lookupWord();
+      if (e.key === "Enter") onSearch();
     });
-    playUkBtn.addEventListener("click", () => {
-      if (ukAudio) {
-        ukAudio.currentTime = 0;
-        ukAudio.play();
+
+    playEnBtn.addEventListener("click", () => {
+      if (enAudio) {
+        enAudio.currentTime = 0;
+        enAudio.play();
       }
     });
+
+    // QR helpers
+    function downloadQR() {
+      const link = document.createElement("a");
+      link.href = QR_URL;
+      link.download = "Trilingual-Dictionary-QR.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function shareApp() {
+      if (navigator.share) {
+        navigator.share({
+          title: "Anmol’s Trilingual Dictionary",
+          text: "Check out this English–Punjabi–Hindi dictionary app.",
+          url: APP_URL
+        }).catch((err) => {
+          console.log("Share cancelled or failed:", err);
+        });
+      } else {
+        alert("Direct sharing is not supported on this device.\n\nYou can share this link:\n" + APP_URL);
+      }
+    }
   </script>
 </body>
 </html>
