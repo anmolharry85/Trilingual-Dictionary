@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trilingual Dictionary (EN–PA–HI)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    .app {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      text-align: center;
+      color: #555;
+      margin-bottom: 16px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      margin-bottom: 12px;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: black;
+      color: white;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .label {
+      font-weight: 600;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      font-size: 0.9rem;
+    }
+    .value {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+    }
+    .audio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 0.85rem;
+      background: #333;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 16px;
+    }
+    .small {
+      font-size: 0.8rem;
+      color: #777;
+    }
+    .error {
+      color: #b00020;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    .lang-block {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>Multilingual Word Helper</h1>
+    <div class="subtitle">English → Punjabi → Hindi • Phonetics + Pronunciation + Meaning</div>
+
+    <div class="card">
+      <div class="input-row">
+        <input id="wordInput" type="text" placeholder="Type an English word (e.g. school)" />
+        <button id="searchBtn">Search</button>
+      </div>
+      <div class="small">Tip: Keep spelling correct for best results.</div>
+      <div id="status" class="small"></div>
+      <div id="error" class="error"></div>
+    </div>
+
+    <div id="results" style="display:none;">
+      <div class="card">
+        <div class="label">Word</div>
+        <div class="value" id="resWord">–</div>
+
+        <div class="label">Phonetic (IPA)</div>
+        <div class="value" id="resPhonetic">–</div>
+
+        <div class="label">English (UK) Pronunciation</div>
+        <button id="playUkBtn" class="audio-btn" style="display:none;">
+          ▶ Play UK Audio
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="label">Meaning – English</div>
+        <div class="value" id="meaningEn">–</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Meaning – Punjabi (ਪੰਜਾਬੀ)</div>
+        <div class="value" id="meaningPa">–</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Meaning – Hindi (हिन्दी)</div>
+        <div class="value" id="meaningHi">–</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const wordInput = document.getElementById("wordInput");
+    const searchBtn = document.getElementById("searchBtn");
+    const statusEl = document.getElementById("status");
+    const errorEl = document.getElementById("error");
+    const resultsEl = document.getElementById("results");
+
+    const resWord = document.getElementById("resWord");
+    const resPhonetic = document.getElementById("resPhonetic");
+    const meaningEn = document.getElementById("meaningEn");
+    const meaningPa = document.getElementById("meaningPa");
+    const meaningHi = document.getElementById("meaningHi");
+    const playUkBtn = document.getElementById("playUkBtn");
+
+    let ukAudio = null;
+
+    // ---- Helper: call Free Dictionary API for English data ----
+    async function fetchEnglishData(word) {
+      const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Word not found in English dictionary.");
+      const data = await res.json();
+      const entry = data[0];
+
+      // phonetic
+      let phonetic = entry.phonetic || "";
+      if (!phonetic && Array.isArray(entry.phonetics)) {
+        const phonObj = entry.phonetics.find(p => p.text);
+        if (phonObj) phonetic = phonObj.text;
+      }
+
+      // UK pronunciation audio (try to pick an audio labeled 'uk' if possible)
+      let audioUrl = "";
+      if (Array.isArray(entry.phonetics)) {
+        // Some entries have audio URLs; we just pick the first non-empty
+        const audioObj = entry.phonetics.find(p => p.audio);
+        if (audioObj) audioUrl = audioObj.audio;
+      }
+
+      // meaning in English (take first definition)
+      let englishMeaning = "";
+      if (Array.isArray(entry.meanings) && entry.meanings.length > 0) {
+        const firstMeaning = entry.meanings[0];
+        if (Array.isArray(firstMeaning.definitions) && firstMeaning.definitions.length > 0) {
+          englishMeaning = firstMeaning.definitions[0].definition;
+        }
+      }
+
+      return { phonetic, audioUrl, englishMeaning };
+    }
+
+    // ---- Helper: simple translation using MyMemory API (free) ----
+    // Note: This is free and rate-limited; for production, replace with a paid API (Google, DeepL, etc.)
+    async function translateText(text, targetLang) {
+      // targetLang: 'pa' for Punjabi, 'hi' for Hindi
+      const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("Translation error");
+      const data = await res.json();
+      if (data && data.responseData && data.responseData.translatedText) {
+        return data.responseData.translatedText;
+      }
+      throw new Error("Translation not available");
+    }
+
+    async function lookupWord() {
+      const word = wordInput.value.trim();
+      if (!word) {
+        errorEl.textContent = "Please type a word first.";
+        return;
+      }
+
+      errorEl.textContent = "";
+      statusEl.textContent = "Searching...";
+      searchBtn.disabled = true;
+      resultsEl.style.display = "none";
+
+      resWord.textContent = "";
+      resPhonetic.textContent = "";
+      meaningEn.textContent = "";
+      meaningPa.textContent = "";
+      meaningHi.textContent = "";
+      playUkBtn.style.display = "none";
+      ukAudio = null;
+
+      try {
+        // 1. English data (phonetic, audio, English meaning)
+        const englishData = await fetchEnglishData(word);
+        resWord.textContent = word;
+        resPhonetic.textContent = englishData.phonetic || "Not available";
+        meaningEn.textContent = englishData.englishMeaning || "Meaning not found.";
+
+        // set up audio
+        if (englishData.audioUrl) {
+          ukAudio = new Audio(englishData.audioUrl);
+          playUkBtn.style.display = "inline-flex";
+        } else {
+          ukAudio = null;
+          playUkBtn.style.display = "none";
+        }
+
+        // 2. Translations of the English meaning into Punjabi and Hindi
+        if (englishData.englishMeaning) {
+          statusEl.textContent = "Translating meaning into Punjabi and Hindi...";
+
+          const [punjabi, hindi] = await Promise.all([
+            translateText(englishData.englishMeaning, "pa").catch(() => null),
+            translateText(englishData.englishMeaning, "hi").catch(() => null)
+          ]);
+
+          meaningPa.textContent = punjabi || "Punjabi translation not available.";
+          meaningHi.textContent = hindi || "Hindi translation not available.";
+        } else {
+          meaningPa.textContent = "Punjabi translation not available.";
+          meaningHi.textContent = "Hindi translation not available.";
+        }
+
+        resultsEl.style.display = "block";
+        statusEl.textContent = "Done.";
+      } catch (err) {
+        console.error(err);
+        errorEl.textContent = err.message || "Something went wrong.";
+        statusEl.textContent = "";
+      } finally {
+        searchBtn.disabled = false;
+      }
+    }
+
+    // Events
+    searchBtn.addEventListener("click", lookupWord);
+    wordInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") lookupWord();
+    });
+    playUkBtn.addEventListener("click", () => {
+      if (ukAudio) {
+        ukAudio.currentTime = 0;
+        ukAudio.play();
+      }
+    });
+  </script>
+</body>
+</html>
